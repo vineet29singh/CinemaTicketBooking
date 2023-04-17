@@ -41,14 +41,11 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	private void findNumberOfSeatsAndPaymentAmount(User user, List<TicketTypeRequest> ticketTypeRequests) {
-		int numberOfAdults = validator.countTotalTicketType(ticketTypeRequests,
-				(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.ADULT));
-		int numberOfChilds = validator.countTotalTicketType(ticketTypeRequests,
-				(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.CHILD));
+		int numberOfAdults = validator.countTotalTicketType(ticketTypeRequests,Type.ADULT);
+		int numberOfChilds = validator.countTotalTicketType(ticketTypeRequests,Type.CHILD);
 		numberOfSeatsForReservation = numberOfAdults + numberOfChilds;
 		paymentAmount = Math.addExact(Math.multiplyExact(numberOfAdults, Messages.ADULT_FARE),
-				Math.multiplyExact(numberOfChilds, Messages.CHILD_FARE));
-		
+															Math.multiplyExact(numberOfChilds, Messages.CHILD_FARE));
 		
 
 	}
@@ -57,28 +54,33 @@ public class TicketServiceImpl implements TicketService {
 
 		String exceptionMessage = "";
 
-		// User null check
+		// User Null check
 		if (Objects.isNull(user)) {
 			exceptionMessage = Messages.EXCEPTION_WHEN_USER_NULL;
 		}
 
-		// Account ID check
+		// Account ID Positive Number check
 		else if (user.validateUser().equals(Messages.INVALID_ACCOUNT_ID)) {
 			exceptionMessage = Messages.INVALID_ACCOUNT_ID;
-		} else if (ticketTypeRequests.length < 1) {
+		} 
+		
+		// Check If at least One Request is provided
+		else if (ticketTypeRequests.length < 1) {
 			exceptionMessage = Messages.EXCEPTION_WHEN_ZERO_TICKET_REQUEST;
 		}
-
+		
+		// Check if No Adult present in Booking Request
 		else if (validator.checkIfAdultNotPresent(Arrays.asList(ticketTypeRequests))) {
 
 			exceptionMessage = Messages.EXCEPTION_WHEN_NO_ADULT;
 		}
 		
+		// Check if Infant count is more than adult count in Booking Request
 		else if (validator.checkInfantCountInValid(Arrays.asList(ticketTypeRequests))) {
 			exceptionMessage = Messages.INFANTS_NUMBER_GREATER_THAN_ADULTS;
 		}
 
-
+		// Check Max of 20 bookings for Request
 		else if (validator.checkTicketQuantityInValid(Arrays.asList(ticketTypeRequests))) {
 			exceptionMessage = Messages.INVALID_TICKET_QUANTITY;
 		} 

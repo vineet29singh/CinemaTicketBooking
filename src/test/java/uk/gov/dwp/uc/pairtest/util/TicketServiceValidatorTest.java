@@ -93,8 +93,7 @@ class TicketServiceValidatorTest {
 	final void testCountTotalTicket_AdultType() {
         TicketTypeRequest ticketTypeRequest_adult = new TicketTypeRequest(TicketTypeRequest.Type.ADULT,19);
         TicketTypeRequest ticketTypeRequest_child = new TicketTypeRequest(TicketTypeRequest.Type.ADULT,1);
-        int ticketCount =  unit.countTotalTicketType(List.of(ticketTypeRequest_adult,ticketTypeRequest_child),
-        		(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.ADULT));
+        int ticketCount =  unit.countTotalTicketType(List.of(ticketTypeRequest_adult,ticketTypeRequest_child),Type.ADULT);
 		assertTrue(ticketCount == 20);
 	}
 	
@@ -102,8 +101,7 @@ class TicketServiceValidatorTest {
 	final void testCountTotalTicket_ForChildType() {
         TicketTypeRequest ticketTypeRequest_adult = new TicketTypeRequest(TicketTypeRequest.Type.CHILD,11);
         TicketTypeRequest ticketTypeRequest_child = new TicketTypeRequest(TicketTypeRequest.Type.ADULT,10);
-        int ticketCount =  unit.countTotalTicketType(List.of(ticketTypeRequest_adult,ticketTypeRequest_child),
-        		(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.CHILD));
+        int ticketCount =  unit.countTotalTicketType(List.of(ticketTypeRequest_adult,ticketTypeRequest_child),Type.CHILD);
 		assertTrue(ticketCount == 11);
 	}
 

@@ -27,17 +27,18 @@ public class TicketServiceValidator {
 	
 	public boolean checkInfantCountInValid(List<TicketTypeRequest> ticketTypeRequests) {
 		
-		int numberOfAdults = countTotalTicketType(ticketTypeRequests, (ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.ADULT));
-		int numberOfInfants = countTotalTicketType(ticketTypeRequests, (ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.INFANT));
+		int numberOfAdults = countTotalTicketType(ticketTypeRequests, Type.ADULT);
+		int numberOfInfants = countTotalTicketType(ticketTypeRequests, Type.INFANT);
 		return (numberOfInfants > numberOfAdults)? true:false;
 	}
 	
 	
-	public int countTotalTicketType(List<TicketTypeRequest> ticketTypeRequests, Predicate<TicketTypeRequest> checkForType) {
+	public int countTotalTicketType(List<TicketTypeRequest> ticketTypeRequests, Type type) {
+		Predicate <TicketTypeRequest> checkForType = (ticketTypeRequest)->ticketTypeRequest.getTicketType().equals(type);
 		int numberOfTicketOfGivenType = ticketTypeRequests.stream()
 				.filter(checkForType)
-				.map(TicketTypeRequest::getNoOfTickets)
-				.reduce(0,(a,b)->a+b).intValue();
+				.mapToInt(TicketTypeRequest::getNoOfTickets)
+				.sum();
 		return numberOfTicketOfGivenType;
 	}
 		
