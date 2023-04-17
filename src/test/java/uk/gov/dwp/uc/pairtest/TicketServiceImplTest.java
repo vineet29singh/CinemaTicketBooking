@@ -26,8 +26,9 @@ public class TicketServiceImplTest {
 
     private TicketServiceImpl unit;
     @Mock
-	private TicketPaymentService paymentService = new TicketPaymentServiceImpl();
-    @Mock SeatReservationService reservationServcie;
+	private TicketPaymentService paymentService;
+    @Mock 
+    private SeatReservationService reservationServcie;
 
     @BeforeEach
     public void setUp(){

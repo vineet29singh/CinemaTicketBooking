@@ -11,8 +11,8 @@ import java.util.Optional;
  */
 public final class TicketTypeRequest {
 
-    private int noOfTickets;
-    private Type type;
+    private final int noOfTickets;
+    private final Type type;
 
     public TicketTypeRequest(Type type, int noOfTickets) {
         this.type = type;
@@ -30,23 +30,5 @@ public final class TicketTypeRequest {
     public enum Type {
         ADULT, CHILD , INFANT
     }
-    
-	public static Optional<Type> getTicketType(String ticketType) {
-		
-		Objects.requireNonNull(ticketType,"ticket type must not be null");
-		
-		for (Type currType : Type.values()) {
-			
-		// trimmed the parameter	
-			if (currType.name().equalsIgnoreCase(ticketType.trim())) {
-				return Optional.ofNullable(currType);
-			}
-
-		}
-
-		return Optional.empty();
-
-	}
-    
     
 }

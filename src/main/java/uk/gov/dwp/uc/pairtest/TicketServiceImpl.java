@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import thirdparty.paymentgateway.TicketPaymentService;
-import thirdparty.paymentgateway.TicketPaymentServiceImpl;
 import thirdparty.seatbooking.SeatReservationService;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type;
@@ -21,12 +20,6 @@ public class TicketServiceImpl implements TicketService {
 	final TicketServiceValidator validator = new TicketServiceValidator();
 	int paymentAmount;
 	int numberOfSeatsForReservation;
-
-	public TicketServiceImpl(SeatReservationService reservationServcie) {
-		super();
-		this.paymentService = new TicketPaymentServiceImpl();
-		this.reservationServcie = reservationServcie;
-	}
 
 	public TicketServiceImpl(TicketPaymentService paymentService, SeatReservationService reservationServcie) {
 		super();
