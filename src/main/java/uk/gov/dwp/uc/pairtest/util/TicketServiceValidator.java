@@ -13,6 +13,7 @@ public class TicketServiceValidator {
 		
 		return ticketTypeRequests.stream().map(TicketTypeRequest::getTicketType)
 				.noneMatch(ticketType -> ticketType.equals(Type.ADULT));
+		
 	}
 	
 	public boolean checkTicketQuantityInValid(List<TicketTypeRequest> ticketTypeRequests) {
@@ -26,18 +27,18 @@ public class TicketServiceValidator {
 	
 	public boolean checkInfantCountInValid(List<TicketTypeRequest> ticketTypeRequests) {
 		
-		int numberOfAdults = countTotalTicketType(ticketTypeRequests, (ticketType) -> ticketType.equals(Type.ADULT));
-		int numberOfInfants = countTotalTicketType(ticketTypeRequests, (ticketType) -> ticketType.equals(Type.INFANT));
+		int numberOfAdults = countTotalTicketType(ticketTypeRequests, (ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.ADULT));
+		int numberOfInfants = countTotalTicketType(ticketTypeRequests, (ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.INFANT));
 		return (numberOfInfants > numberOfAdults)? true:false;
 	}
 	
 	
-	public int countTotalTicketType(List<TicketTypeRequest> ticketTypeRequests, Predicate<Type> checkForType) {
-		Long numberOfAdults = ticketTypeRequests.stream()
-				.map(TicketTypeRequest::getTicketType)
-				.filter(checkForType) 
-				.count();
-		return numberOfAdults.intValue();
+	public int countTotalTicketType(List<TicketTypeRequest> ticketTypeRequests, Predicate<TicketTypeRequest> checkForType) {
+		int numberOfTicketOfGivenType = ticketTypeRequests.stream()
+				.filter(checkForType)
+				.map(TicketTypeRequest::getNoOfTickets)
+				.reduce(0,(a,b)->a+b).intValue();
+		return numberOfTicketOfGivenType;
 	}
 		
 	

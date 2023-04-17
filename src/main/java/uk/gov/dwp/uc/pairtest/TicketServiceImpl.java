@@ -3,8 +3,6 @@ package uk.gov.dwp.uc.pairtest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.paymentgateway.TicketPaymentServiceImpl;
@@ -21,6 +19,8 @@ public class TicketServiceImpl implements TicketService {
 	TicketPaymentService paymentService;
 	SeatReservationService reservationServcie;
 	final TicketServiceValidator validator = new TicketServiceValidator();
+	int paymentAmount;
+	int numberOfSeatsForReservation;
 
 	public TicketServiceImpl(SeatReservationService reservationServcie) {
 		super();
@@ -40,20 +40,23 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void purchaseTickets(User user, TicketTypeRequest... ticketTypeRequests) throws InvalidPurchaseException {
 
-		boolean isValid = validateRequest(user, ticketTypeRequests);
-		int paymentToBeMade = calculatePaymentAmount(user, Arrays.asList(ticketTypeRequests));
-		paymentService.makePayment(user.getAccountId(), paymentToBeMade); // payment is always a success :Assumption
+		validateRequest(user, ticketTypeRequests);
+		findNumberOfSeatsAndPaymentAmount(user, Arrays.asList(ticketTypeRequests));
+		paymentService.makePayment(user.getAccountId(), paymentAmount);
+		reservationServcie.reserveSeat(user.getAccountId(), numberOfSeatsForReservation);// payment is always a success :Assumption
 
 	}
 
-	private int calculatePaymentAmount(User user, List<TicketTypeRequest> ticketTypeRequests) {
+	private void findNumberOfSeatsAndPaymentAmount(User user, List<TicketTypeRequest> ticketTypeRequests) {
 		int numberOfAdults = validator.countTotalTicketType(ticketTypeRequests,
-				(ticketType) -> ticketType.equals(Type.ADULT));
+				(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.ADULT));
 		int numberOfChilds = validator.countTotalTicketType(ticketTypeRequests,
-				(ticketType) -> ticketType.equals(Type.CHILD));
-		int totalFare = Math.addExact(Math.multiplyExact(numberOfAdults, Messages.ADULT_FARE),
+				(ticketTypeRequest) -> ticketTypeRequest.getTicketType().equals(Type.CHILD));
+		numberOfSeatsForReservation = numberOfAdults + numberOfChilds;
+		paymentAmount = Math.addExact(Math.multiplyExact(numberOfAdults, Messages.ADULT_FARE),
 				Math.multiplyExact(numberOfChilds, Messages.CHILD_FARE));
-		return totalFare;
+		
+		
 
 	}
 
